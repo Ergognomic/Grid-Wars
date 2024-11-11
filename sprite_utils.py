@@ -2,8 +2,7 @@ import pygame
 
 class SpriteManager(pygame.sprite.Sprite):
 
-    def __init__(self, img_path: str, layer: int, *args):
-        self._layer = layer     # define sprite layer
+    def __init__(self, img_path: str, *args):
         super().__init__(*args) # initialize Sprite class
         self.img_path = img_path
 

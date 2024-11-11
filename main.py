@@ -1,10 +1,10 @@
-import game_utils
+import gui_utils
 
 FPS = 60
-SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
+SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
 
-game = game_utils.GameManager("GAME", SCREEN_WIDTH, SCREEN_HEIGHT)
-clock = game_utils.pygame.time.Clock()
+game = gui_utils.GUIManager("GAME", SCREEN_WIDTH, SCREEN_HEIGHT)
+clock = gui_utils.pygame.time.Clock()
 
 while game.is_running:
 
