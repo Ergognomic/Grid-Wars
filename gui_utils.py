@@ -24,16 +24,15 @@ class GUIManager():
         bg.Background(self.screen, 1, 1, "assets/bg.png", self.background)
 
         self.menu_buttons = pygame.sprite.Group()
-        self.menu_size = pygame.surface.Surface((350, 350))
+        self.menu_size = pygame.surface.Surface((500, 500))
         self.start_button = bu.Button(self.menu_size, (width/2, 150), (0, 0), (70, 17), "assets/menu_buttons.png", self.menu_buttons)
-        self.load_button = bu.Button(self.menu_size, (width/2, 250), (0, 36), (70, 17), "assets/menu_buttons.png", self.menu_buttons)
+        self.load_button = bu.Button(self.menu_size, (width/2, 300), (0, 36), (70, 17), "assets/menu_buttons.png", self.menu_buttons)
 
         self.mode_buttons = pygame.sprite.Group()
-        self.mode_size = pygame.surface.Surface((150, 150))
+        self.mode_size = pygame.surface.Surface((200, 200))
         self.solo_button = bu.Button(self.mode_size, (width/4, 200), (0, 0), (31, 31), "assets/mode_buttons.png", self.mode_buttons)
         self.versus_button = bu.Button(self.mode_size, (width/2, 200), (0, 64), (31, 31), "assets/mode_buttons.png", self.mode_buttons)
         self.robot_button = bu.Button(self.mode_size, (3 * width/4, 200), (0, 128), (31, 31), "assets/mode_buttons.png", self.mode_buttons)
-
 
         self.screen_mode = "MAIN_MENU"
         self.game_mode = None
@@ -76,10 +75,10 @@ class GUIManager():
                 print("robot clicked")
 
         elif self.screen_mode == "SOLO_GAME":
-
-            self.game_mode.update(self.click_pos)
+            if self.game_mode.update(self.click_pos):
+                self.game_mode = None
+                self.screen_mode = "MAIN_MENU"
             
-
 
     def render(self):
         self.screen.fill("black")

@@ -13,6 +13,9 @@ class Button(sprite_utils.SpriteManager):
 
         self.clicked = True
 
+    def draw(self, surface: sprite_utils.pygame.surface.Surface):
+        surface.blit(self.image, self.rect)
+
     def update(self, surface: sprite_utils.pygame.surface.Surface, click_pos: tuple[int, int]):
         action = False
         mouse_pos = sprite_utils.pygame.mouse.get_pos()
@@ -22,7 +25,6 @@ class Button(sprite_utils.SpriteManager):
             w, h = self.sprite_size
             self.image, self.rect = self.scale_sprite(self.spritesheet, surface, 1, (x, y + h + 1), (w, h))
             self.rect.center = self.screen_pos
-            
             
             if self.rect.collidepoint(click_pos) and sprite_utils.pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
@@ -34,5 +36,5 @@ class Button(sprite_utils.SpriteManager):
 
         if sprite_utils.pygame.mouse.get_pressed()[0] == 0:
             self.clicked = False
-        
+
         return action
