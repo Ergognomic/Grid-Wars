@@ -40,7 +40,7 @@ class LVL1(GameLogic):
     def fill_map(self):
         pass
 
-    def _get_valid_tiles(self, grid: list[list[int]], pos: tuple[int, int]) -> list[tuple[int, int]]:
+    def _get_valid_tiles(self, grid: list[list[int]], pos: tuple[int, int], *args) -> list[tuple[int, int]]:
         y, x = pos
         valid_tiles: list[tuple[int, int]] = []
         for i in range(max(y-1, 0), min(y+2, 5)):
@@ -154,7 +154,7 @@ class LVL3(GameLogic):
                     if (y == prev_y + dy) and (x == prev_x + dx):
                         valid_tiles.append((y, x))
         return valid_tiles
-    
+
 @dataclass(frozen=True)
 class GameState:
     grid: list[list[int]]

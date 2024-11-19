@@ -8,7 +8,7 @@ class GameBoardUI:
 
         self.game_border = pygame.surface.Surface((486,486))
         self.game_border_rect = self.game_border.get_rect()
-        self.game_border_rect.topleft = (397, 93)
+        self.game_border_rect.topleft = (97, 93)
 
         self.large = pygame.surface.Surface((96,96))
         self.small = pygame.surface.Surface((68,68))
@@ -30,7 +30,7 @@ class GameBoardUI:
                 self.button_list.append(
                     button.Button(
                         self.large, 
-                        (448 + (x * 96), 144 + (y * 96)), 
+                        (148 + (x * 96), 144 + (y * 96)), 
                         (0, 0), 
                         (23,23), 
                         "assets/number_buttons.png", 
@@ -41,7 +41,7 @@ class GameBoardUI:
             idx = y * 5 + x
             self.button_list[idx] = button.Button(
                 self.large, 
-                (448 + (x * 96), 144 + (y * 96)), 
+                (148 + (x * 96), 144 + (y * 96)), 
                 (24, 0), 
                 (23,23), 
                 "assets/number_buttons.png", 
@@ -56,7 +56,7 @@ class GameBoardUI:
                 self.button_list.append(
                     button.Button(
                         self.small, 
-                        (436 + (x * 68), 132 + (y * 68)), 
+                        (136 + (x * 68), 132 + (y * 68)), 
                         sprite_pos, 
                         (23,23), 
                         "assets/number_buttons.png", 
@@ -72,7 +72,7 @@ class GameBoardUI:
                 self.button_list.append(
                     button.Button(
                         self.small, 
-                        (436 + (x * 68), 132 + (y * 68)), 
+                        (136 + (x * 68), 132 + (y * 68)), 
                         sprite_pos, 
                         (23,23), 
                         "assets/number_buttons.png", 
@@ -90,7 +90,7 @@ class GameBoardUI:
             idx = y * 5 + x
             self.button_list[idx] = button.Button(
                 self.large, 
-                (448 + (x * 96), 144 + (y * 96)), 
+                (148 + (x * 96), 144 + (y * 96)), 
                 (0, 0), 
                 (23,23), 
                 "assets/number_buttons.png", 
@@ -103,7 +103,7 @@ class GameBoardUI:
             idx = y * 7 + x
             self.button_list[idx] = button.Button(
                 self.small, 
-                (436 + (x * 68), 132 + (y * 68)),
+                (136 + (x * 68), 132 + (y * 68)),
                 (0, 0), 
                 (23,23), 
                 "assets/number_buttons.png", 
@@ -116,7 +116,7 @@ class GameBoardUI:
             idx = y * 7 + x
             self.button_list[idx] = button.Button(
                 self.small, 
-                (436 + (x * 68), 132 + (y * 68)),
+                (136 + (x * 68), 132 + (y * 68)),
                 (0, 0), 
                 (23,23), 
                 "assets/number_buttons.png", 
@@ -134,7 +134,7 @@ class GameBoardUI:
                 sprite_pos = (24 * val, 0)
                 self.button_list[idx] = button.Button(
                     self.large, 
-                    (448 + (x * 96), 144 + (y * 96)),
+                    (148 + (x * 96), 144 + (y * 96)),
                     sprite_pos, 
                     (23,23), 
                     "assets/number_buttons.png", 
@@ -149,7 +149,7 @@ class GameBoardUI:
                 sprite_pos = (24 * val, 0)
                 self.button_list[idx] = button.Button(
                     self.small, 
-                    (436 + (x * 68), 132 + (y * 68)),
+                    (136 + (x * 68), 132 + (y * 68)),
                     sprite_pos, 
                     (23,23), 
                     "assets/number_buttons.png", 
@@ -164,7 +164,7 @@ class GameBoardUI:
                 sprite_pos = (24 * val, 0)
                 self.button_list[idx] = button.Button(
                     self.small, 
-                    (436 + (x * 68), 132 + (y * 68)),
+                    (136 + (x * 68), 132 + (y * 68)),
                     sprite_pos, 
                     (23,23), 
                     "assets/number_buttons.png", 
@@ -181,7 +181,7 @@ class GameBoardUI:
                         val = self.manager._state.val - 1
                         self.button_list[i] = button.Button(
                             self.large, 
-                            (448 + (x * 96), 144 + (y * 96)), 
+                            (148 + (x * 96), 144 + (y * 96)), 
                             (val * 24, 0), 
                             (23,23), 
                             "assets/number_buttons.png", 
@@ -202,7 +202,7 @@ class GameBoardUI:
                         sprite_pos = (val * 24, 0)
                         self.button_list[i] = button.Button(
                             self.small, 
-                            (436 + (x * 68), 132 + (y * 68)), 
+                            (136 + (x * 68), 132 + (y * 68)), 
                             sprite_pos, 
                             (23,23), 
                             "assets/number_buttons.png", 
@@ -223,7 +223,7 @@ class GameBoardUI:
                         sprite_pos = (val * 24, 0)
                         self.button_list[i] = button.Button(
                             self.small, 
-                            (436 + (x * 68), 132 + (y * 68)), 
+                            (136 + (x * 68), 132 + (y * 68)), 
                             sprite_pos, 
                             (23,23), 
                             "assets/number_buttons.png", 
@@ -246,6 +246,3 @@ class GameBoardUI:
             self.level2_buttons.draw(surface)
         elif self.level == "LEVEL_THREE":
             self.level3_buttons.draw(surface)
-
-        
-    

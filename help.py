@@ -41,7 +41,7 @@ rules from level 1 with some additional constraints.\n\n\
 RULES FOR PLACING NUMBERS\n\
     - Cell must be adjacent to the previous number.\n\
     - Cell must be on the same row or column as the matching\n\
-      number in the outer-ring. OR on a diagonal where the number\n\
+      number in the outer-ring OR on a diagonal where the number\n\
             exists at one corner.\n"
 
 txt5 = "**Dead Ends and Undos**\n\
@@ -82,6 +82,7 @@ class HelpBox(text_utils.Text):
         self.pages.append(txt4)
         self.pages.append(txt5)
         self.pages.append(txt6)
+        self.load_page(self.page_num)
 
     def load_page(self, page_num: int):
         self.load_messages(self.pages[page_num], (10, 10))
@@ -107,16 +108,15 @@ class HelpBox(text_utils.Text):
         elif self.left_button.update(*args):
             if self.page_num > 0:
                 self.page_num -= 1
+                self.load_page(self.page_num)
         elif self.right_button.update(*args):
             if self.page_num < len(self.pages) - 1:
                 self.page_num += 1
+                self.load_page(self.page_num)
         return action
         
-    
     def render(self):
-        self.load_page(self.page_num)
         self.screen.blit(self.text_box, self.rect)
-
         if self.page_num > 0:
             self.left_button.draw(self.screen)
         if self.page_num < len(self.pages) - 1:

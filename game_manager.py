@@ -27,7 +27,7 @@ class GameManager:
         if self._state.val <= 25: return False
         self._level += 1
         if self._level > 3: return True
-        
+
         self._logic = self._get_level_logic(self._level)
         prev_grid = self._stack[-1].grid
         self._stack.clear()
@@ -38,7 +38,7 @@ class GameManager:
 
     def undo_move(self):
         self._stack.pop()
-        self._state = self._stack[-1]
+        return self._stack[-1]
 
     # def load_game(self, file_path: str):
     #     x = 0
@@ -50,3 +50,26 @@ class GameManager:
         if level == 1: return game_logic.LVL1()
         if level == 2: return game_logic.LVL2()
         if level == 3: return game_logic.LVL3()
+
+    def solve(self, hint: bool = True):
+        if self.backtrack(self._stack[-1]):
+            if hint: self._stack.pop()
+            self._state = self._stack[-1]
+            return True
+        
+    def backtrack(self, state: game_logic.GameState):
+        if state.val > 25: return True
+        for tile in state.valid_tiles:
+            y, x = tile
+            if state.val == 25:
+                new_valid_tiles = self._logic._get_valid_tiles(state.grid, (y, x), state.val)
+            else:
+                new_valid_tiles = self._logic._get_valid_tiles(state.grid, (y, x), state.val + 1)
+            new_grid = game_logic.deepcopy(state.grid)
+            new_grid[y][x] = state.val
+            state = game_logic.GameState(new_grid, tile, new_valid_tiles, state.val + 1)
+            self._stack.append(state)
+            
+            if self.backtrack(state): return True
+            else: state = self.undo_move()
+        return False
