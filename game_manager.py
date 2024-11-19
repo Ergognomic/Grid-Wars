@@ -1,4 +1,5 @@
 import game_logic
+import json
 
 class GameManager:
     def __init__(self, ui_class):
@@ -17,6 +18,15 @@ class GameManager:
         self._turn = 1
         self._stack.append(self._state)
 
+    def load_game(self, file_path: str):
+        with open(file_path, 'r') as file:
+            game_data = json.load(file)
+            self._level = game_data['level']
+            self._logic = self._get_level_logic(self._level)
+            self._stack = [game_logic.GameState.from_json(state) for state in game_data['stack']]
+            self._state = self._stack[-1]
+            self._turn = game_data['turn']
+    
     def make_move(self, pos: tuple[int, int]):
         if pos not in self._state.valid_tiles: return False
         self._state = self._logic.take_turn(self._state, pos)
@@ -40,11 +50,9 @@ class GameManager:
         self._stack.pop()
         return self._stack[-1]
 
-    # def load_game(self, file_path: str):
-    #     x = 0
-
-    # def save_game(self, file_path: str):
-    #     x = 0
+    def save_game(self, file_path: str):
+        with open(file_path, 'w') as file:
+            json.dump(self.to_dict(), file)
 
     def _get_level_logic(self, level: int):
         if level == 1: return game_logic.LVL1()
@@ -73,3 +81,13 @@ class GameManager:
             if self.backtrack(state): return True
             else: state = self.undo_move()
         return False
+    
+    def to_dict(self) -> dict:
+        return {
+            'level': self._level,
+            'turn': self._turn,
+            'stack': [state.to_dict() for state in self._stack]
+        }
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())

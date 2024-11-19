@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from copy import deepcopy
 import random
+import json
 
 class GameLogic(ABC):
     @abstractmethod
@@ -161,3 +162,15 @@ class GameState:
     pos: tuple[int, int]
     valid_tiles: list[tuple[int, int]]
     val: int
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
+    
+    @staticmethod
+    def from_json(json_str: str) -> 'GameState':
+        data = json.loads(json_str)
+        return GameState(data['grid'], tuple(data['pos']), data['valid_tiles'], data['val'])
+
+    def to_dict(self) -> dict:
+        return self.__dict__
+    
