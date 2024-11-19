@@ -23,6 +23,7 @@ class Versus(object):
         self.computer_manager.ui.setup_new_game()
 
         self.start_time = pygame.time.get_ticks()
+        self.cooldown = random.randint(200, 5000)
 
         self.help_opened = True
         self.text_box = help.HelpBox(self.screen, (140, 50), (1000, 620), (0xff9f17))
@@ -65,10 +66,11 @@ class Versus(object):
             print("Player Wins!")
             return True  # Game Completed!!
         
-        cooldown = random.randint(1000, 5000)
+        
         current_time = pygame.time.get_ticks()
-        if current_time - self.start_time >= cooldown:
+        if current_time - self.start_time >= self.cooldown:
             self.start_time = current_time
+            self.cooldown = random.randint(200, 5000)
             if self.computer_manager.ui.update(): 
                 print("Computer Wins!")
                 return True
