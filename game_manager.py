@@ -11,10 +11,10 @@ class GameManager:
         
         self._stack: list[game_logic.GameState] = []
 
-    def new_game(self):
+    def new_game(self, *args):
         self._level = 1
         self._logic = self._get_level_logic(self._level)
-        self._state = self._logic.initialize()
+        self._state = self._logic.initialize(*args)
         self._turn = 1
         self._stack.append(self._state)
 
@@ -23,9 +23,10 @@ class GameManager:
             game_data = json.load(file)
             self._level = game_data['level']
             self._logic = self._get_level_logic(self._level)
-            self._stack = [game_logic.GameState.from_json(state) for state in game_data['stack']]
+            self._stack = [game_logic.GameState.from_json(json.dumps(state)) for state in game_data['stack']]
             self._state = self._stack[-1]
             self._turn = game_data['turn']
+            self._logic._initialize_load_game(self._state.grid)
     
     def make_move(self, pos: tuple[int, int]):
         if pos not in self._state.valid_tiles: return False
@@ -50,8 +51,15 @@ class GameManager:
         self._stack.pop()
         return self._stack[-1]
 
-    def save_game(self, file_path: str):
-        with open(file_path, 'w') as file:
+    def save_game(self, file_path: str, computer: bool = False):
+        path = "saves/" + file_path
+        if computer:
+
+            stack: list[game_logic.GameState] = []
+            stack.append(self.ui._stack[0])
+            self._stack = stack
+        
+        with open(path, 'w') as file:
             json.dump(self.to_dict(), file)
 
     def _get_level_logic(self, level: int):
@@ -77,7 +85,7 @@ class GameManager:
             new_grid[y][x] = state.val
             state = game_logic.GameState(new_grid, tile, new_valid_tiles, state.val + 1)
             self._stack.append(state)
-            
+
             if self.backtrack(state): return True
             else: state = self.undo_move()
         return False
@@ -86,7 +94,7 @@ class GameManager:
         return {
             'level': self._level,
             'turn': self._turn,
-            'stack': [state.to_dict() for state in self._stack]
+            'stack': [state.to_dict() for state in self._stack],
         }
 
     def to_json(self) -> str:

@@ -1,5 +1,9 @@
 import pygame
 import sys
+import json
+
+import tkinter
+import tkinter.filedialog
 
 import info
 import background as bg
@@ -44,15 +48,23 @@ class GUIManager():
         bg.Background(self.screen, 1, 1, "assets/bg.png", self.background)
 
         self.menu_buttons = pygame.sprite.Group()
+        
+        self.title_size = pygame.surface.Surface((800, 600))
+        self.title = bu.Button(self.title_size, (width/2, 100), (0, 90), (89, 17), "assets/menu_buttons.png", self.menu_buttons)
+
         self.menu_size = pygame.surface.Surface((400, 400))
-        self.start_button = bu.Button(self.menu_size, (width/2, 150), (0, 0), (70, 17), "assets/menu_buttons.png", self.menu_buttons)
-        self.load_button = bu.Button(self.menu_size, (width/2, 300), (0, 36), (70, 17), "assets/menu_buttons.png", self.menu_buttons)
+        self.start_button = bu.Button(self.menu_size, (width/2, 300), (0, 0), (70, 17), "assets/menu_buttons.png", self.menu_buttons)
+        self.load_button = bu.Button(self.menu_size, (width/2, 450), (0, 36), (70, 17), "assets/menu_buttons.png", self.menu_buttons)
 
         self.mode_buttons = pygame.sprite.Group()
         self.mode_size = pygame.surface.Surface((200, 200))
         self.solo_button = bu.Button(self.mode_size, (width/4, 200), (0, 0), (31, 31), "assets/mode_buttons.png", self.mode_buttons)
         self.versus_button = bu.Button(self.mode_size, (width/2, 200), (0, 64), (31, 31), "assets/mode_buttons.png", self.mode_buttons)
         self.robot_button = bu.Button(self.mode_size, (3 * width/4, 200), (0, 128), (31, 31), "assets/mode_buttons.png", self.mode_buttons)
+
+        self.back_buttons = pygame.sprite.Group()
+        self.back_size = pygame.surface.Surface((96,96))
+        self.back_button = bu.Button(self.back_size, (50, 50), (120, 0), (23, 23), "assets/misc_buttons.png", self.back_buttons)
 
         self.info_bg = pygame.surface.Surface((300, 150))
         self.info_rect = self.info_bg.get_rect()
@@ -65,6 +77,7 @@ class GUIManager():
         self.screen_mode = "MAIN_MENU"
         self.game_mode = None
         self.is_running = True
+        self.file_name = ""
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -76,48 +89,151 @@ class GUIManager():
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.click_pos = pygame.mouse.get_pos()
-
+    
     def update(self):
         self.background.update()
         if self.screen_mode == "MAIN_MENU":
 
             if self.start_button.update(self.menu_size, self.click_pos):
                 self.screen_mode = "MODE_SELECT"
+                self.start_button.clicked = True
+
             if self.load_button.update(self.menu_size, self.click_pos):
-                print("load clicked")
+                self.load_button.clicked = True
+                file_ui = tkinter.Tk()
+                file_ui.withdraw()
+                full_path = tkinter.filedialog.askopenfilename(parent=file_ui, initialdir='./saves')
+                file_ui.destroy()
+                
+                if "/saves" not in full_path:
+                    self.file_name = ""
+                else:
+                    relative_path = full_path.split("/saves", 1)[-1]
+                    self.file_name = "./saves" + relative_path
+
+                    if relative_path == "/solo_save.json":
+                        self.game_mode = solo_game.Solo(self.screen, self.file_name)
+                        self.screen_mode = "SOLO_GAME"
+
+                    elif relative_path == "/vs_save.json":
+                        self.game_mode = versus_game.Versus(self.screen, self.file_name)
+                        self.screen_mode = "VERSUS_GAME"
+
+                    elif relative_path == "/computer_save.json":
+                        self.game_mode = computer_game.Robot(self.screen, self.file_name)
+                        self.screen_mode = "COMPUTER_GAME"
         
         elif self.screen_mode == "MODE_SELECT":
-            if self.solo_button.update(self.mode_size, self.click_pos):
-                self.game_mode = solo_game.Solo(self.screen)
-                self.screen_mode = "SOLO_GAME"
-                
-            if self.versus_button.update(self.mode_size, self.click_pos):
-                self.game_mode = versus_game.Versus(self.screen)
-                self.screen_mode = "VERSUS_GAME"
+            
+            if self.back_button.update(self.back_size, self.click_pos):
+                self.screen_mode = "MAIN_MENU"
+                self.back_button.clicked = True
+                self.solo_button.clicked = True
+                self.versus_button.clicked = True
+                self.robot_button.clicked = True
 
+                self.start_button.clicked = True
+                self.load_button.clicked = True
+
+            if self.solo_button.update(self.mode_size, self.click_pos):
+                self.game_mode = solo_game.Solo(self.screen, self.file_name)
+                self.screen_mode = "SOLO_GAME"
+
+            if self.versus_button.update(self.mode_size, self.click_pos):
+                self.game_mode = versus_game.Versus(self.screen, self.file_name)
+                self.screen_mode = "VERSUS_GAME"
+                
             if self.robot_button.update(self.mode_size, self.click_pos):
-                self.game_mode = computer_game.Robot(self.screen)
+                self.game_mode = computer_game.Robot(self.screen, self.file_name)
                 self.screen_mode = "COMPUTER_GAME"
 
         elif self.screen_mode == "SOLO_GAME":
+            if self.back_button.update(self.back_size, self.click_pos):
+                self.screen_mode = "MAIN_MENU"
+                self.back_button.clicked = True
+                self.solo_button.clicked = True
+                self.versus_button.clicked = True
+                self.robot_button.clicked = True
+                
+                self.start_button.clicked = True
+                self.load_button.clicked = True
+
+                self.file_name = ""
+
             if self.game_mode.update(self.click_pos):
                 self.game_mode = None
                 self.screen_mode = "MAIN_MENU"
-        
+                
+                self.back_button.clicked = True
+                self.solo_button.clicked = True
+                self.versus_button.clicked = True
+                self.robot_button.clicked = True
+                
+                self.start_button.clicked = True
+                self.load_button.clicked = True
+
+                self.file_name = ""
+
         elif self.screen_mode == "VERSUS_GAME":
+            if self.back_button.update(self.back_size, self.click_pos):
+                self.screen_mode = "MAIN_MENU"
+                self.back_button.clicked = True
+                self.solo_button.clicked = True
+                self.versus_button.clicked = True
+                self.robot_button.clicked = True
+
+                self.start_button.clicked = True
+                self.load_button.clicked = True
+
+                self.file_name = ""
+            
             if self.game_mode.update(self.click_pos): 
                 self.game_mode = None
                 self.screen_mode = "MAIN_MENU"
+                
+                self.back_button.clicked = True
+                self.solo_button.clicked = True
+                self.versus_button.clicked = True
+                self.robot_button.clicked = True
+                
+                self.start_button.clicked = True
+                self.load_button.clicked = True        
+                
+                self.file_name = ""                
 
         elif self.screen_mode == "COMPUTER_GAME":
+            if self.back_button.update(self.back_size, self.click_pos):
+                self.screen_mode = "MAIN_MENU"
+                self.back_button.clicked = True
+                self.solo_button.clicked = True
+                self.versus_button.clicked = True
+                self.robot_button.clicked = True
+                
+                self.start_button.clicked = True
+                self.load_button.clicked = True            
+                
+                self.file_name = ""
+            
             if self.game_mode.update():
                 self.game_mode = None
                 self.screen_mode = "MAIN_MENU"
 
+                self.back_button.clicked = True
+                self.solo_button.clicked = True
+                self.versus_button.clicked = True
+                self.robot_button.clicked = True
+
+                self.start_button.clicked = True
+                self.load_button.clicked = True
+
+                self.file_name = ""  
 
     def render(self):
         self.screen.fill("white")
         self.background.draw(self.screen)
+
+        if self.screen_mode != "MAIN_MENU":
+            self.back_buttons.draw(self.screen)
 
         if self.screen_mode == "MAIN_MENU":
             self.menu_buttons.draw(self.screen)
@@ -134,6 +250,7 @@ class GUIManager():
             self.robot_info.render()
 
         elif self.screen_mode == "SOLO_GAME":
+            self.back_buttons.draw(self.screen)
             self.game_mode.render()
         
         elif self.screen_mode == "VERSUS_GAME":

@@ -3,11 +3,11 @@ import button
 
 from collections import deque
 
-class GameBoardUI:
+class RobotBoardUI:
     def __init__(self, game_manager):
         self.manager = game_manager
         self.level = None
-        self.stack = None
+        self._stack = None
 
         self.game_border = pygame.surface.Surface((486,486))
         self.game_border_rect = self.game_border.get_rect()
@@ -89,8 +89,69 @@ class GameBoardUI:
             self.manager.solve(False)
             self._stack = deque(self.manager._stack)
 
+    def setup_load_game(self):
+        level = self.manager._level
+        if level == 1:
+            self.button_list.clear()
+            self.level = "LEVEL_ONE"
+            for i in range(25):
+                y, x = i // 5, i % 5
+                val = self.manager._state.grid[y][x]
+                sprite_pos = (val * 24, 0)
+                self.button_list.append(
+                    button.Button(
+                        self.large, 
+                        (748 + (x * 96), 144 + (y * 96)), 
+                        sprite_pos, 
+                        (23,23), 
+                        "assets/number_buttons.png", 
+                        self.level1_buttons
+                    )
+                )
+            self.manager.solve(False)
+            self._stack = deque(self.manager._stack)
+
+        elif level == 2:
+            self.button_list.clear()
+            self.level = "LEVEL_TWO"
+            for i in range(49):
+                y, x = i // 7, i % 7
+                val = self.manager._state.grid[y][x]
+                sprite_pos = (val * 24, 0)
+                self.button_list.append(
+                    button.Button(
+                        self.small,
+                        (736 + (x * 68), 132 + (y * 68)), 
+                        sprite_pos, 
+                        (23,23), 
+                        "assets/number_buttons.png", 
+                        self.level2_buttons
+                    )
+                )
+            self.manager.solve(False)
+            self._stack = deque(self.manager._stack)
+
+        elif level == 3:
+            self.button_list.clear()
+            self.level = "LEVEL_THREE"
+            for i in range(49):
+                y, x = i // 7, i % 7
+                val = self.manager._state.grid[y][x]
+                sprite_pos = (val * 24, 0)
+                self.button_list.append(
+                    button.Button(
+                        self.small,
+                        (736 + (x * 68), 132 + (y * 68)), 
+                        sprite_pos, 
+                        (23,23), 
+                        "assets/number_buttons.png", 
+                        self.level3_buttons
+                    )
+                )
+            self.manager.solve(False)
+            self._stack = deque(self.manager._stack)
+
     def update(self):
-        
         move = self._stack.popleft()
         y, x = move.pos
         idx = y * len(move.grid) + x

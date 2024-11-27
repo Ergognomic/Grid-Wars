@@ -5,17 +5,21 @@ import game_manager as gm
 
 
 class Robot(object):
-    def __init__(self, screen: pygame.surface.Surface):
+    def __init__(self, screen: pygame.surface.Surface, file_name: str = ""):
         self.screen = screen
         self.manager = gm.GameManager(comp.GameBoardUI)
 
-        self.manager.new_game()
-        self.manager.ui.setup_new_game()
+        if file_name == "":
+            self.manager.new_game()
+            self.manager.ui.setup_new_game()
+        else:
+            self.manager.load_game(file_name)
+            self.manager.ui.setup_load_game()
 
         self.start_time = pygame.time.get_ticks()
 
     def update(self):
-        cooldown = random.randint(500, 2000)
+        cooldown = random.randint(200, 500)
         current_time = pygame.time.get_ticks()
         if current_time - self.start_time >= cooldown:
             self.start_time = current_time

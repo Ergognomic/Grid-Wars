@@ -9,21 +9,27 @@ import versus_computer_ui as robot
 import game_manager as gm
 
 class Versus(object):
-    def __init__(self, screen: pygame.surface.Surface):
+    def __init__(self, screen: pygame.surface.Surface, file_name: str = ""):
         self.screen = screen
         self.player_manager = gm.GameManager(player.GameBoardUI)
-        self.computer_manager = gm.GameManager(robot.GameBoardUI)
+        self.computer_manager = gm.GameManager(robot.RobotBoardUI)
 
-        self.player_manager.new_game()
-        self.player_manager.ui.setup_new_game()
+        if file_name == "":
+            self.player_manager.new_game()
+            self.player_manager.ui.setup_new_game()
 
-        self.computer_manager.new_game()
-        self.computer_manager._stack = self.player_manager._stack
-        self.computer_manager._state = self.player_manager._state
-        self.computer_manager.ui.setup_new_game()
+            y, x = self.player_manager._stack[-1].pos
+            self.computer_manager.new_game(y, x)
+            self.computer_manager.ui.setup_new_game()
+        else:
+            self.player_manager.load_game(file_name)
+            self.player_manager.ui.setup_load_game()
+
+            self.computer_manager.load_game("./saves/computer_save.json")
+            self.computer_manager.ui.setup_load_game()
 
         self.start_time = pygame.time.get_ticks()
-        self.cooldown = random.randint(200, 5000)
+        self.cooldown = random.randint(300, 1000)
 
         self.help_opened = True
         self.text_box = help.HelpBox(self.screen, (140, 50), (1000, 620), (0xff9f17))
@@ -40,6 +46,7 @@ class Versus(object):
         self.hint_button = button.Button(self.large, (640, 441), (48, 0), (23,23), "assets/misc_buttons.png", self.misc_buttons)
 
     def update(self, click_pos: tuple[int, int]):
+        current_time = pygame.time.get_ticks()
         if self.help_opened:
             if self.text_box.update(self.large, click_pos):
                 self.help_opened = False
@@ -50,7 +57,8 @@ class Versus(object):
 
         # SAVE BUTTON
         elif self.save_button.update(self.large, click_pos):
-            print("save")
+            self.player_manager.save_game("vs_save.json")
+            self.computer_manager.save_game("computer_save.json", True)
         
         # UNDO BUTTON
         elif self.undo_button.update(self.large, click_pos, active=self.player_manager._state.val > 2):
@@ -62,19 +70,16 @@ class Versus(object):
                 return True  # Game Completed!!
 
         # PLAYER BOARD
-        if self.player_manager.ui.update(click_pos):
+        elif self.player_manager.ui.update(click_pos):
             print("Player Wins!")
             return True  # Game Completed!!
         
-        
-        current_time = pygame.time.get_ticks()
-        if current_time - self.start_time >= self.cooldown:
+        elif current_time - self.start_time >= self.cooldown:
             self.start_time = current_time
-            self.cooldown = random.randint(200, 5000)
+            self.cooldown = random.randint(300, 1900)
             if self.computer_manager.ui.update(): 
                 print("Computer Wins!")
-                return True
-
+                return True 
         return False
 
     def render(self):

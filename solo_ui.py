@@ -80,8 +80,56 @@ class GameBoardUI:
                     )
                 )
 
-    # def setup_load_game(self, game_state):
-    #     x = 0
+    def setup_load_game(self):
+        level = self.manager._level
+        if level == 1:
+            self.level = "LEVEL_ONE"
+            for i in range(25):
+                y, x = i // 5, i % 5
+                val = self.manager._state.grid[y][x]
+                sprite_pos = (val * 24, 0)
+                self.button_list.append(
+                    button.Button(
+                        self.large, 
+                        (448 + (x * 96), 144 + (y * 96)), 
+                        sprite_pos, 
+                        (23,23), 
+                        "assets/number_buttons.png", 
+                        self.level1_buttons
+                    )
+                )
+        elif level == 2:
+            self.level = "LEVEL_TWO"
+            for i in range(49):
+                y, x = i // 7, i % 7
+                val = self.manager._state.grid[y][x]
+                sprite_pos = (val * 24, 0)
+                self.button_list.append(
+                    button.Button(
+                        self.small,
+                        (436 + (x * 68), 132 + (y * 68)), 
+                        sprite_pos, 
+                        (23,23), 
+                        "assets/number_buttons.png", 
+                        self.level2_buttons
+                    )
+                )
+        elif level == 3:
+            self.level = "LEVEL_THREE"
+            for i in range(49):
+                y, x = i // 7, i % 7
+                val = self.manager._state.grid[y][x]
+                sprite_pos = (val * 24, 0)
+                self.button_list.append(
+                    button.Button(
+                        self.small,
+                        (436 + (x * 68), 132 + (y * 68)), 
+                        sprite_pos, 
+                        (23,23), 
+                        "assets/number_buttons.png", 
+                        self.level3_buttons
+                    )
+                )
 
     def undo(self, click_pos: tuple[int, int]):
         if self.manager._state.val <= 2: return

@@ -6,12 +6,17 @@ import solo_ui as solo
 import game_manager as gm
 
 class Solo(object):
-    def __init__(self, screen: pygame.surface.Surface):
+    def __init__(self, screen: pygame.surface.Surface, file_name: str = ""):
         self.screen = screen
         self.manager = gm.GameManager(solo.GameBoardUI)
 
-        self.manager.new_game()
-        self.manager.ui.setup_new_game()
+        if file_name == "":
+            self.manager.new_game()
+            self.manager.ui.setup_new_game()
+        else:
+            self.manager.load_game(file_name)
+            self.manager.ui.setup_load_game()
+
 
         self.help_opened = True
         self.text_box = help.HelpBox(self.screen, (140, 50), (1000, 620), (0xff9f17))
@@ -38,7 +43,7 @@ class Solo(object):
 
         # SAVE BUTTON
         elif self.save_button.update(self.solo_size, click_pos):
-            print("save")
+            self.manager.save_game("solo_save.json")
         
         # UNDO BUTTON
         elif self.undo_button.update(self.solo_size, click_pos, active=self.manager._state.val > 2):

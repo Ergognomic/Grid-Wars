@@ -5,7 +5,7 @@ import button
 txt1 = "Welcome to GRID WARS!\n\
 This is the HELP Page, you can open this page at any time by\n\
 pressing the `H` button on the screen or on your keyboard.\n\
-Press the `X` button in-game to return to the main menu\n\
+Press the `<` button in-game to return to the main menu\n\
 or press the `ESC` key on your keyboard to quit to desktop.\n\n\
 HOW TO PLAY\n\
     Every new game starts at Level 1.\n\

@@ -17,7 +17,6 @@ class Button(sprite_utils.SpriteManager):
         surface.blit(self.image, self.rect)
 
     def update(self, surface: sprite_utils.pygame.surface.Surface, click_pos: tuple[int, int], active = True):
-        
         action = False
         x, y = self.sprite_pos
         w, h = self.sprite_size
